@@ -1,0 +1,415 @@
+@import 'variables';
+@import 'mixins';
+
+// ─── OVERLAY ──────────────────────────────────────────────────────────────────
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+  display: flex;
+  justify-content: flex-end;
+  @include fade-in;
+}
+
+// ─── SIDE PANEL (shared by all modals) ───────────────────────────────────────
+.side-panel {
+  background: $color-surface;
+  height: 100vh;
+  overflow-y: auto;
+  box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  @include slide-in-right;
+  @include scrollbar;
+
+  &--lg { width: min(#{$panel-width}, 100vw); }
+  &--md { width: min(480px, 100vw); }
+  &--sm { width: min(400px, 100vw); }
+
+  &__header {
+    @include flex-between;
+    padding: 18px $spacing-xl 14px;
+    border-bottom: 1px solid $color-border;
+    position: sticky;
+    top: 0;
+    background: $color-surface;
+    z-index: 5;
+
+    h2 {
+      margin: 0;
+      font-size: $font-size-2xl;
+      font-weight: 700;
+      color: $color-text-primary;
+    }
+  }
+
+  &__close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: $color-text-secondary;
+    padding: 0;
+    line-height: 1;
+    @include flex-center;
+  }
+
+  &__body {
+    padding: 18px $spacing-xl;
+    flex: 1;
+  }
+
+  &__footer {
+    padding: 14px $spacing-xl;
+    border-top: 1px solid $color-border;
+    display: flex;
+    justify-content: flex-end;
+    position: sticky;
+    bottom: 0;
+    background: $color-surface;
+  }
+}
+
+// ─── NEW APPOINTMENT ──────────────────────────────────────────────────────────
+.appt-modal {
+  &__client-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: $spacing-lg;
+    position: relative;
+    flex-wrap: wrap;
+  }
+
+  &__search {
+    @include input-base;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  &__client-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 250px;
+    z-index: 50;
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    box-shadow: $shadow-md;
+    margin-top: 2px;
+    overflow: hidden;
+    @include fade-in;
+  }
+
+  &__client-item {
+    padding: 10px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.1s;
+    font-size: $font-size-md;
+
+    &:hover { background: #f9fafb; }
+
+    &-name  { font-weight: 600; }
+    &-phone { color: $color-text-muted; font-size: $font-size-sm; }
+  }
+
+  &__bill-date-wrapper {
+    @include flex-center;
+    gap: 6px;
+    white-space: nowrap;
+    position: relative;
+  }
+
+  // Services table header
+  &__services-header {
+    display: grid;
+    grid-template-columns: 2fr 1.4fr 1.2fr 0.8fr 0.7fr 0.8fr 32px;
+    gap: 6px;
+    background: #f9fafb;
+    border-radius: $radius-lg $radius-lg 0 0;
+    padding: 8px 10px;
+    font-size: $font-size-sm;
+    font-weight: 600;
+    color: $color-text-muted;
+  }
+
+  &__service-row {
+    display: grid;
+    grid-template-columns: 2fr 1.4fr 1.2fr 0.8fr 0.7fr 0.8fr 32px;
+    gap: 6px;
+    padding: 8px 10px;
+    background: #f9fafb;
+    border-top: 1px solid $color-border;
+    align-items: center;
+  }
+
+  &__group-header {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1.4fr 1.2fr 0.8fr 0.7fr 0.8fr 32px;
+    gap: 6px;
+    background: #f9fafb;
+    padding: 8px 10px;
+    font-size: $font-size-sm;
+    font-weight: 600;
+    color: $color-text-muted;
+    border-top: 1px solid $color-border;
+  }
+
+  &__group-row {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1.4fr 1.2fr 0.8fr 0.7fr 0.8fr 32px;
+    gap: 6px;
+    padding: 8px 10px;
+    background: #fafafa;
+    border-top: 1px solid $color-border;
+    align-items: center;
+  }
+
+  &__action-btns {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0 20px;
+  }
+
+  &__add-btn {
+    @include btn-primary;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: $font-size-md;
+  }
+
+  &__extras-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: $spacing-lg;
+  }
+
+  &__payment-row {
+    display: flex;
+    gap: $spacing-lg;
+  }
+
+  &__totals {
+    flex: 1;
+    background: #f9fafb;
+    border-radius: $radius-lg;
+    padding: 12px $spacing-lg;
+    font-size: $font-size-md;
+  }
+
+  &__total-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid $color-border;
+
+    &--bold span:last-child { font-weight: 700; }
+    &--muted span { color: $color-text-muted; }
+  }
+}
+
+// ─── STAFF PILL (×Michel) ─────────────────────────────────────────────────────
+.staff-pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: $color-primary;
+  color: #fff;
+  border-radius: $radius-sm;
+  padding: 4px 8px;
+  font-size: $font-size-sm;
+  flex: 1;
+
+  select {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: $font-size-sm;
+    cursor: pointer;
+    outline: none;
+  }
+}
+
+// ─── VIEW BILL ────────────────────────────────────────────────────────────────
+.view-bill {
+  display: flex;
+  height: 100vh;
+
+  &__left {
+    width: 220px;
+    background: $color-surface;
+    padding: $spacing-lg;
+    border-right: 1px solid $color-border;
+    flex-shrink: 0;
+    overflow-y: auto;
+    @include scrollbar;
+  }
+
+  &__right {
+    flex: 1;
+    padding: $spacing-lg;
+    background: #f3f4f6;
+    overflow-y: auto;
+    @include scrollbar;
+  }
+
+  &__avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: $color-text-muted;
+    color: #fff;
+    @include flex-center;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+
+  &__ewallet-badge {
+    font-size: $font-size-xs;
+    color: $color-danger;
+    font-weight: 600;
+    background: #fef2f2;
+    border-radius: $radius-sm;
+    padding: 2px 6px;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+
+  &__tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: $spacing-lg;
+  }
+
+  &__tab {
+    padding: 7px $spacing-lg;
+    font-size: $font-size-md;
+    font-weight: 600;
+    border: none;
+    border-radius: $radius-md;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &--active { background: $color-primary; color: #fff; }
+    &--inactive { background: $color-border; color: $color-text-secondary; }
+  }
+
+  &__service-card {
+    background: $color-surface;
+    border-radius: $radius-xl;
+    padding: $spacing-lg;
+  }
+
+  &__badge {
+    border-radius: $radius-sm;
+    padding: 2px 8px;
+    font-size: $font-size-sm;
+    font-weight: 600;
+
+    &--yellow { background: #fef3c7; color: #92400e; }
+    &--green  { background: #d1fae5; color: #065f46; }
+  }
+
+  &__status-select {
+    background: $color-success;
+    color: #fff;
+    border: none;
+    border-radius: $radius-md;
+    padding: 6px 10px;
+    font-weight: 600;
+    font-size: $font-size-sm;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: $spacing-lg;
+  }
+}
+
+// ─── MINI CALENDAR POPUP ─────────────────────────────────────────────────────
+.mini-calendar {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 999;
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-lg;
+  padding: 12px;
+  width: 260px;
+  margin-top: 4px;
+  @include fade-in;
+
+  &__nav { @include flex-between; margin-bottom: 8px; }
+
+  &__days-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    margin-bottom: 4px;
+  }
+
+  &__day-abbr {
+    text-align: center;
+    font-size: 11px;
+    color: $color-text-faint;
+    font-weight: 600;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+  }
+
+  &__day-btn {
+    width: 100%;
+    aspect-ratio: 1;
+    border: none;
+    border-radius: $radius-md;
+    font-size: $font-size-sm;
+    transition: background 0.15s;
+    cursor: pointer;
+
+    &--selected { background: $color-primary !important; color: #fff; font-weight: 700; }
+    &--empty    { background: transparent; cursor: default; }
+    &--normal   { background: transparent; color: $color-text-secondary;
+                  &:hover { background: #f3f4f6; } }
+  }
+}
+
+// ─── BLOCK TIME MODAL ─────────────────────────────────────────────────────────
+.block-time-modal {
+  &__form { @include flex-col; gap: $spacing-md; }
+
+  &__row  {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-md;
+  }
+}
+
+// ─── BOOKING CARD POPUP ───────────────────────────────────────────────────────
+.booking-popup {
+  position: fixed;
+  z-index: 200;
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-lg;
+  padding: $spacing-lg;
+  width: 280px;
+  @include fade-in;
+
+  &__time   { font-weight: 700; font-size: $font-size-md; color: $color-success; }
+  &__status { font-size: $font-size-xs; font-weight: 600; background: $color-success;
+              color: #fff; border-radius: $radius-sm; padding: 1px 7px; margin-top: 2px; display: inline-block; }
+  &__service { font-size: $font-size-md; color: $color-text-secondary; margin: 6px 0 4px; }
+  &__client  { font-size: $font-size-sm; color: $color-text-muted; }
+  &__footer  { @include flex-between; font-size: $font-size-md; margin-top: 8px; }
+}

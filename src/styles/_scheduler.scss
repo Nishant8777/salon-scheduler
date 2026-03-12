@@ -1,0 +1,351 @@
+@import 'variables';
+@import 'mixins';
+
+.scheduler-wrapper {
+  font-family: $font-family;
+  background: $color-bg;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// ─── TOP BAR ──────────────────────────────────────────────────────────────────
+.topbar {
+  @include flex-between;
+  padding: 10px $spacing-lg;
+  background: $color-surface;
+  border-bottom: 1px solid $color-border;
+  box-shadow: $shadow-sm;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+  z-index: 20;
+  min-height: $topbar-height;
+
+  &__left   { @include flex-center; gap: $spacing-sm; }
+  &__center { @include flex-center; gap: $spacing-sm; flex: 1; justify-content: center; }
+  &__right  { @include flex-center; gap: $spacing-sm; flex-wrap: wrap; }
+
+  &__date-label {
+    font-size: $font-size-base;
+    font-weight: 600;
+    color: $color-text-primary;
+    min-width: 180px;
+    text-align: center;
+  }
+
+  &__nav-btn {
+    @include btn-outline;
+    padding: 4px 12px;
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  &__view-btn  { @include btn-outline; font-weight: 600; }
+  &__add-btn   { @include btn-primary; }
+  &__icon-btn  { @include btn-outline; padding: 7px 10px; font-size: $font-size-lg; }
+
+  &__interval {
+    @include input-base;
+    cursor: pointer;
+    padding: 7px 12px;
+  }
+}
+
+// ─── VIEW DROPDOWN ────────────────────────────────────────────────────────────
+.view-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 100;
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-md;
+  min-width: 150px;
+  overflow: hidden;
+  @include fade-in;
+
+  &__item {
+    @include flex-center;
+    justify-content: flex-start;
+    gap: $spacing-sm;
+    padding: 10px $spacing-lg;
+    width: 100%;
+    background: $color-surface;
+    border: none;
+    cursor: pointer;
+    font-size: $font-size-md;
+    text-align: left;
+    transition: background 0.1s;
+
+    &:hover       { background: #f3f4f6; }
+    &--active     { background: #f3f4f6; font-weight: 600; }
+  }
+}
+
+// ─── CALENDAR BODY ────────────────────────────────────────────────────────────
+.calendar-body {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  @include scrollbar;
+}
+
+// ─── DAY / WEEK VIEW ──────────────────────────────────────────────────────────
+.grid-view {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.time-gutter {
+  width: $time-gutter-width;
+  flex-shrink: 0;
+  border-right: 1px solid $color-border;
+  background: #fafafa;
+
+  &__header {
+    height: $staff-header-height;
+    border-bottom: 1px solid $color-border;
+  }
+
+  &__slot {
+    height: $slot-height;
+    position: relative;
+    border-bottom: 1px solid $color-border-light;
+  }
+
+  &__label {
+    position: absolute;
+    top: -8px;
+    right: 6px;
+    font-size: $font-size-xs;
+    color: $color-text-faint;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+}
+
+.staff-columns {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: hidden;
+  @include scrollbar;
+}
+
+.staff-col {
+  flex: 1;
+  min-width: 180px;
+  border-right: 1px solid $color-border;
+
+  &__header {
+    height: $staff-header-height;
+    @include flex-col;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    border-bottom: 1px solid $color-border;
+    background: $color-surface;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  &__name {
+    font-size: $font-size-xs;
+    font-weight: 700;
+    color: $color-text-secondary;
+  }
+
+  &__slots { position: relative; }
+
+  &__slot {
+    height: $slot-height;
+    border-bottom: 1px solid $color-border-light;
+    cursor: pointer;
+    transition: background 0.1s;
+
+    &:hover          { background: #f0f9ff; }
+    &--blocked {
+      background: repeating-linear-gradient(
+        45deg, #f3f4f6, #f3f4f6 4px, #e9eaec 4px, #e9eaec 8px
+      );
+      cursor: not-allowed;
+      &:hover { background: repeating-linear-gradient(
+        45deg, #f3f4f6, #f3f4f6 4px, #e9eaec 4px, #e9eaec 8px
+      ); }
+    }
+  }
+}
+
+// ─── BOOKING CHIP ─────────────────────────────────────────────────────────────
+.booking-chip {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  border-radius: $radius-md;
+  padding: 4px 8px;
+  cursor: pointer;
+  color: #fff;
+  font-size: $font-size-xs;
+  font-weight: 600;
+  overflow: hidden;
+  z-index: 5;
+  background: linear-gradient(135deg, $color-success, $color-success-dark);
+  box-shadow: 0 2px 6px rgba($color-success, 0.3);
+  transition: opacity 0.15s, transform 0.1s;
+
+  &:hover { opacity: .9; transform: scale(1.01); }
+
+  &__time    { display: block; }
+  &__service { display: block; opacity: .9; }
+}
+
+// ─── NOW LINE ─────────────────────────────────────────────────────────────────
+.now-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: $color-danger;
+  z-index: 8;
+  pointer-events: none;
+
+  &__label {
+    position: absolute;
+    left: -68px;
+    top: -10px;
+    background: $color-danger;
+    color: #fff;
+    border-radius: $radius-sm;
+    padding: 1px 4px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+}
+
+// ─── MONTH VIEW ───────────────────────────────────────────────────────────────
+.month-view {
+  flex: 1;
+  overflow-y: auto;
+  @include scrollbar;
+
+  &__header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border-bottom: 1px solid $color-border;
+  }
+
+  &__day-label {
+    text-align: center;
+    padding: 8px 0;
+    font-size: $font-size-sm;
+    font-weight: 600;
+    color: $color-text-muted;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+  }
+
+  &__cell {
+    min-height: 90px;
+    border: 1px solid $color-border-light;
+    padding: 6px 8px;
+    cursor: pointer;
+    background: $color-surface;
+    transition: background 0.1s;
+
+    &:hover    { background: #f9fafb; }
+    &--today   { background: #eff6ff; }
+    &--empty   { cursor: default; background: #fafafa; }
+  }
+
+  &__date-num {
+    font-size: $font-size-sm;
+    font-weight: 700;
+    color: $color-text-secondary;
+    width: 22px;
+    height: 22px;
+    @include flex-center;
+    border-radius: $radius-full;
+
+    &--today {
+      background: #3b82f6;
+      color: #fff;
+    }
+  }
+
+  &__chip {
+    font-size: 10px;
+    background: $color-success;
+    color: #fff;
+    border-radius: $radius-sm;
+    padding: 1px 4px;
+    margin-top: 2px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__more {
+    font-size: 10px;
+    color: $color-text-muted;
+    margin-top: 2px;
+  }
+}
+
+// ─── LIST WEEK VIEW ───────────────────────────────────────────────────────────
+.list-view {
+  flex: 1;
+  overflow-y: auto;
+  padding: $spacing-lg;
+  @include scrollbar;
+
+  &__day-header {
+    font-size: $font-size-md;
+    font-weight: 700;
+    color: $color-text-secondary;
+    border-bottom: 2px solid $color-border;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+
+    &--today { color: #3b82f6; }
+  }
+
+  &__item {
+    @include flex-between;
+    padding: 10px 14px;
+    background: $color-surface;
+    border-radius: $radius-lg;
+    border: 1px solid $color-border;
+    margin-bottom: 6px;
+    cursor: pointer;
+    box-shadow: $shadow-sm;
+    transition: box-shadow 0.15s;
+
+    &:hover { box-shadow: $shadow-md; }
+  }
+
+  &__bar {
+    width: 4px;
+    height: 36px;
+    background: $color-success;
+    border-radius: 2px;
+    margin-right: $spacing-md;
+  }
+
+  &__badge {
+    font-size: $font-size-xs;
+    font-weight: 600;
+    border-radius: $radius-sm;
+    padding: 2px 8px;
+
+    &--paid    { background: #d1fae5; color: #065f46; }
+    &--unpaid  { background: #fef2f2; color: $color-danger; }
+    &--partial { background: #fef3c7; color: #92400e; }
+  }
+}
